@@ -37,8 +37,8 @@ def start(bot, update):
 	bot.send_message(chat_id=update.message.chat_id, text="Hello")
 
 def ponyal(bot, update, args):
-	if (len(args) < 2):
-		bot.send_message(chat_id=update.message.chat_id, text="Wrong input. You need to unput time and then text")
+	if (len(args) < 1):
+		bot.send_message(chat_id=update.message.chat_id, text="Wrong input. You need to unput time")
 		return
 	if not args[0].isdigit():
 		bot.send_message(chat_id=update.message.chat_id, text="Wrong input. First argument must be time in seconds")
@@ -52,12 +52,32 @@ def ponyal(bot, update, args):
 	# time.sleep(int(args[0]))
 	# bot.send_message(chat_id="31568844", text=message)
 
+# def get_id(bot, update):
 
+def echo(bot, update):
+	print (type(update.message))
+	print (update.message)
+	if not update.message:
+		return
+	if update.message.forward_from:
+		print (update.message.forward_from.id)
+		bot.send_message(chat_id=update.message.chat_id, text=str(update.message.forward_from.id))
+		return
+	if update.message.forward_from_chat:
+		print (update.message.forward_from_chat.id)
+		bot.send_message(chat_id=update.message.chat_id, text=str(update.message.forward_from_chat.id))
+		return
+	# bot.send_message(chat_id=update.message.chat_id, text=str(update.message.chat_id))
 start_handler = CommandHandler('start', start)
 ponyal_handler = CommandHandler('time', ponyal, pass_args=True)
+# def echo(bot, update):
+# 	bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+from telegram.ext import MessageHandler, Filters
+echo_handler = MessageHandler(None, echo)
+# getid_handler = CommandHandler('get_id', getid, pass_args=True)
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(ponyal_handler)
-
+dispatcher.add_handler(echo_handler)
 def error_callback(bot, update, error):
 	print ("Error: ")
 	print (error)
@@ -66,5 +86,6 @@ def error_callback(bot, update, error):
 dispatcher.add_error_handler(error_callback)
 
 updater.start_polling()
+
 bot.send_message(chat_id="31568844", text="idle online")
 updater.idle()
